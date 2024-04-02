@@ -12,27 +12,80 @@ def ahp_attributes(ahp_df):
                                index=ahp_df.index, columns=['priority index'])
     return priority_df
 
+# Fungsi untuk menampilkan aksi berdasarkan kepribadian
+def show_action(selected_personality):
+    if selected_personality == "Neuroticism":
+        st.write("Opsional A: Tindakan yang dapat diambil untuk neuroticism.")
+    elif selected_personality == "Openness":
+        st.write("Opsional B: Tindakan yang dapat diambil untuk openness.")
+    elif selected_personality == "Conscientiousness":
+        st.write("Opsional C: Tindakan yang dapat diambil untuk conscientiousness.")
+    elif selected_personality == "Extraversion":
+        st.write("Opsional D: Tindakan yang dapat diambil untuk extraversion.")
+    elif selected_personality == "Agreeableness":
+        st.write("Opsional E: Tindakan yang dapat diambil untuk agreeableness.")
+
+# Fungsi untuk menampilkan distribusi bobot relatif
+# Fungsi untuk menampilkan detail
+def show_detail():
+    st.title('Detail')
+    st.write("""
+        Bobot distribusi yang digunakan dalam prediksi kepribadian:
+
+        | Kriteria          | Openness | Conscientiousness | Extraversion | Agreeableness | Neuroticism |
+        |-------------------|----------|-------------------|--------------|---------------|-------------|
+        | Budget            | 0.2077   | 0.1676            | 0.2073       | 0.1990        | 0.2182      |
+        | Camera            | 0.1846   | 0.2427            | 0.1635       | 0.1713        | 0.2379      |
+        | RAM               | 0.2198   | 0.1821            | 0.1771       | 0.2186        | 0.2024      |
+        | ROM               | 0.1973   | 0.2288            | 0.1639       | 0.1716        | 0.2384      |
+        | Battery           | 0.2099   | 0.1882            | 0.1845       | 0.2214        | 0.1960      |
+        | Processor         | 0.2003   | 0.1712            | 0.2039       | 0.2079        | 0.2166      |
+    """)
+
+    # Data bobot distribusi
+    data = {
+        "Kriteria": ["Budget", "Camera", "RAM", "ROM", "Battery", "Processor"],
+        "Openness": [0.2077, 0.1846, 0.2198, 0.1973, 0.2099, 0.2003],
+        "Conscientiousness": [0.1676, 0.2427, 0.1821, 0.2288, 0.1882, 0.1712],
+        "Extraversion": [0.2073, 0.1635, 0.1771, 0.1639, 0.1845, 0.2039],
+        "Agreeableness": [0.1990, 0.1713, 0.2186, 0.1716, 0.2214, 0.2079],
+        "Neuroticism": [0.2182, 0.2379, 0.2024, 0.2384, 0.1960, 0.2166]
+    }
+
+    # Membuat DataFrame
+    df = pd.DataFrame(data)
+
+    # Menggabungkan data bobot distribusi untuk plot
+    df_melted = df.melt(id_vars=["Kriteria"], var_name="Personality", value_name="Bobot")
+
+    # Membuat bar chart interaktif
+    fig = px.bar(df_melted, x="Kriteria", y="Bobot", color="Personality", barmode="group", color_discrete_sequence=['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557'])
+
+    # Menampilkan plot
+    st.plotly_chart(fig)
+    
+
 # Fungsi utama untuk aplikasi Streamlit
 def main():
-    st.sidebar.title('Navigation')
-    page = st.sidebar.selectbox("Choose a page", ["Prediction", "Definition"])
+    st.sidebar.title('Menu')
+    page = st.sidebar.selectbox("Choose a page", ["Prediction", "Definition", "Detail"])
 
     if page == "Prediction":
         st.markdown(
-            f"<br><br><h1 style='text-align: center;'>Personality Trait Prediction</h1>"
+            f"<h1 style='text-align: center;'>Personality Trait Prediction</h1>"
             "<h4 style='text-align: center;'>By Kelompok 14</h4>", 
             unsafe_allow_html=True
         )
 
         # Teks dari DataFrame
         data_text = """
-                 Budget  Camera     RAM     ROM  Battery  Processor
-        Openness           0.2077  0.1846  0.2198  0.1973   0.2099     0.2003
-        Conscientiousness  0.1676  0.2427  0.1821  0.2288   0.1882     0.1712
-        Extraversion       0.2073  0.1635  0.1771  0.1639   0.1845     0.2039
-        Agreeableness      0.1990  0.1713  0.2186  0.1716   0.2214     0.2079
-        Neuroticism        0.2182  0.2379  0.2024  0.2384   0.1960     0.2166
-        """
+                     Budget  Camera     RAM     ROM  Battery  Processor
+            Openness           0.2077  0.1846  0.2198  0.1973   0.2099     0.2003
+            Conscientiousness  0.1676  0.2427  0.1821  0.2288   0.1882     0.1712
+            Extraversion       0.2073  0.1635  0.1771  0.1639   0.1845     0.2039
+            Agreeableness      0.1990  0.1713  0.2186  0.1716   0.2214     0.2079
+            Neuroticism        0.2182  0.2379  0.2024  0.2384   0.1960     0.2166
+            """
 
         # Membaca DataFrame dari teks
         df = pd.read_csv(StringIO(data_text), delim_whitespace=True, index_col=0)
@@ -104,6 +157,11 @@ def main():
             # Menampilkan DataFrame hasil
             st.write("Personality yang terpilih:", max_personality)
 
+            # Aksi yang dapat diambil
+            if st.button('Lihat Aksi yang Dapat Diambil'):
+                # Atur parameter URL untuk mengarahkan ke halaman lain
+                st.experimental_set_query_params(page='Action')
+
     elif page == "Definition":
         st.title('Definisi Personality Traits')
 
@@ -125,8 +183,8 @@ def main():
         elif selected_personality == "Neuroticism":
             st.write("**Neuroticism**: Ciri-ciri kepribadian yang menunjukkan tingkat kecemasan, ketegangan, dan sensitivitas emosional.")
 
-        
-
+    elif page == "Detail":
+        show_detail()
 
 # Memanggil fungsi utama
 if __name__ == '__main__':
