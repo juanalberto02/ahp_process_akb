@@ -4,7 +4,7 @@ import numpy as np
 from io import StringIO
 import plotly.express as px
 
-st.beta_set_page_config(theme='dark')
+
 # Fungsi untuk perhitungan AHP
 def ahp_attributes(ahp_df):
     sum_array = np.array(ahp_df.sum(numeric_only=True))
