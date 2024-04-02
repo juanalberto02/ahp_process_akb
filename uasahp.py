@@ -19,7 +19,8 @@ def main():
 
     if page == "Prediction":
         st.markdown(
-            f"<h1 style='text-align: center;'>Personality Trait Prediction</h1>", 
+            f"<br><br><h1 style='text-align: center;'>Personality Trait Prediction</h1>"
+            "<h4 style='text-align: center;'>By Kelompok 14</h4>", 
             unsafe_allow_html=True
         )
 
@@ -56,21 +57,21 @@ def main():
         }
 
         # Proses input bobot relatif
-        budvscam = placeholders["budvscam"].number_input("Seberapa penting harga dibandingkan kamera?", value=1)
-        budvsram = placeholders["budvsram"].number_input("Seberapa penting harga dibandingkan RAM?", value=1)
-        budvsrom = placeholders["budvsrom"].number_input("Seberapa penting harga dibandingkan ROM?", value=1)
-        budvsbat = placeholders["budvsbat"].number_input("Seberapa penting harga dibandingkan baterai?", value=1)
-        budvsprc = placeholders["budvsprc"].number_input("Seberapa penting harga dibandingkan processor?", value=1)
-        camvsram = placeholders["camvsram"].number_input("Seberapa penting kamera dibandingkan RAM?", value=1)
-        camvsrom = placeholders["camvsrom"].number_input("Seberapa penting kamera dibandingkan ROM?", value=1)
-        camvsbat = placeholders["camvsbat"].number_input("Seberapa penting kamera dibandingkan batera?", value=1)
-        camvsprc = placeholders["camvsprc"].number_input("Seberapa penting kamera dibandingkan processor?", value=1)
-        ramvsrom = placeholders["ramvsrom"].number_input("Seberapa penting RAM dibandingkan ROM?", value=1)
-        ramvsbat = placeholders["ramvsbat"].number_input("Seberapa penting RAM dibandingkan baterai?", value=1)
-        ramvsprc = placeholders["ramvsprc"].number_input("Seberapa penting RAM dibandingkan processor?", value=1)
-        romvsbat = placeholders["romvsbat"].number_input("Seberapa penting ROM dibandingkan baterai?", value=1)
-        romvsprc = placeholders["romvsprc"].number_input("Seberapa penting ROM dibandingkan processor?", value=1)
-        batvsprc = placeholders["batvsprc"].number_input("Seberapa penting baterai dibandingkan processor?", value=1)
+        budvscam = placeholders["budvscam"].slider("Seberapa penting harga dibandingkan kamera?", min_value=0, max_value=9, value=5, format="%.0f", key="budvscam", help="0: Tidak Penting, 9: Sangat Penting")
+        budvsram = placeholders["budvsram"].slider("Seberapa penting harga dibandingkan RAM?", min_value=0, max_value=9, value=5, format="%.0f", key="budvsram")
+        budvsrom = placeholders["budvsrom"].slider("Seberapa penting harga dibandingkan ROM?", min_value=0, max_value=9, value=5, format="%.0f", key="budvsrom")
+        budvsbat = placeholders["budvsbat"].slider("Seberapa penting harga dibandingkan baterai?", min_value=0, max_value=9, value=5, format="%.0f", key="budvsbat")
+        budvsprc = placeholders["budvsprc"].slider("Seberapa penting harga dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="budvsprc")
+        camvsram = placeholders["camvsram"].slider("Seberapa penting kamera dibandingkan RAM?", min_value=0, max_value=9, value=5, format="%.0f", key="camvsram")
+        camvsrom = placeholders["camvsrom"].slider("Seberapa penting kamera dibandingkan ROM?", min_value=0, max_value=9, value=5, format="%.0f", key="camvsrom")
+        camvsbat = placeholders["camvsbat"].slider("Seberapa penting kamera dibandingkan batera?", min_value=0, max_value=9, value=5, format="%.0f", key="camvsbat")
+        camvsprc = placeholders["camvsprc"].slider("Seberapa penting kamera dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="camvsprc")
+        ramvsrom = placeholders["ramvsrom"].slider("Seberapa penting RAM dibandingkan ROM?", min_value=0, max_value=9, value=5, format="%.0f", key="ramvsrom")
+        ramvsbat = placeholders["ramvsbat"].slider("Seberapa penting RAM dibandingkan baterai?", min_value=0, max_value=9, value=5, format="%.0f", key="ramvsbat")
+        ramvsprc = placeholders["ramvsprc"].slider("Seberapa penting RAM dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="ramvsprc")
+        romvsbat = placeholders["romvsbat"].slider("Seberapa penting ROM dibandingkan baterai?", min_value=0, max_value=9, value=5, format="%.0f", key="romvsbat")
+        romvsprc = placeholders["romvsprc"].slider("Seberapa penting ROM dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="romvsprc")
+        batvsprc = placeholders["batvsprc"].slider("Seberapa penting baterai dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="batvsprc")
 
         # Proses AHP saat tombol ditekan
         if st.button('Proses AHP'):
@@ -105,16 +106,27 @@ def main():
 
     elif page == "Definition":
         st.title('Definisi Personality Traits')
-        st.markdown("""
-        - **Openness**: Ciri-ciri kepribadian yang menunjukkan minat pada seni, kepemimpinan, atau emosi.
-        - **Conscientiousness**: Ciri-ciri kepribadian yang menunjukkan kepatuhan, kedisiplinan, dan keseriusan dalam suatu tindakan.
-        - **Extraversion**: Ciri-ciri kepribadian yang menunjukkan sifat sosial, percaya diri, dan antusiasme.
-        - **Agreeableness**: Ciri-ciri kepribadian yang menunjukkan kerjasama, empati, dan toleransi terhadap orang lain.
-        - **Neuroticism**: Ciri-ciri kepribadian yang menunjukkan tingkat kecemasan, ketegangan, dan sensitivitas emosional.
-        """)
 
-        # Tambahkan tulisan "Made by kelompok 14" di sidebar
-        st.sidebar.markdown("<h3 style='text-align: center;'>Made by kelompok 14</h3>", unsafe_allow_html=True)
+        # Daftar kepribadian
+        personalities = ["Openness", "Conscientiousness", "Extraversion", "Agreeableness", "Neuroticism"]
+        
+        # Pilihan drop-down untuk memilih kepribadian
+        selected_personality = st.selectbox("Pilih Personality", personalities)
+
+        # Menampilkan definisi berdasarkan pilihan pengguna
+        if selected_personality == "Openness":
+            st.write("**Openness**: Ciri-ciri kepribadian yang menunjukkan minat pada seni, kepemimpinan, atau emosi.")
+        elif selected_personality == "Conscientiousness":
+            st.write("**Conscientiousness**: Ciri-ciri kepribadian yang menunjukkan kepatuhan, kedisiplinan, dan keseriusan dalam suatu tindakan.")
+        elif selected_personality == "Extraversion":
+            st.write("**Extraversion**: Ciri-ciri kepribadian yang menunjukkan sifat sosial, percaya diri, dan antusiasme.")
+        elif selected_personality == "Agreeableness":
+            st.write("**Agreeableness**: Ciri-ciri kepribadian yang menunjukkan kerjasama, empati, dan toleransi terhadap orang lain.")
+        elif selected_personality == "Neuroticism":
+            st.write("**Neuroticism**: Ciri-ciri kepribadian yang menunjukkan tingkat kecemasan, ketegangan, dan sensitivitas emosional.")
+
+        
+
 
 # Memanggil fungsi utama
 if __name__ == '__main__':
