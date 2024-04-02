@@ -4,6 +4,7 @@ import numpy as np
 from io import StringIO
 import plotly.express as px
 
+
 # Fungsi untuk perhitungan AHP
 def ahp_attributes(ahp_df):
     sum_array = np.array(ahp_df.sum(numeric_only=True))
@@ -12,20 +13,8 @@ def ahp_attributes(ahp_df):
                                index=ahp_df.index, columns=['priority index'])
     return priority_df
 
-# Fungsi untuk menampilkan aksi berdasarkan kepribadian
-def show_action(selected_personality):
-    if selected_personality == "Neuroticism":
-        st.write("Opsional A: Tindakan yang dapat diambil untuk neuroticism.")
-    elif selected_personality == "Openness":
-        st.write("Opsional B: Tindakan yang dapat diambil untuk openness.")
-    elif selected_personality == "Conscientiousness":
-        st.write("Opsional C: Tindakan yang dapat diambil untuk conscientiousness.")
-    elif selected_personality == "Extraversion":
-        st.write("Opsional D: Tindakan yang dapat diambil untuk extraversion.")
-    elif selected_personality == "Agreeableness":
-        st.write("Opsional E: Tindakan yang dapat diambil untuk agreeableness.")
 
-# Fungsi untuk menampilkan distribusi bobot relatif
+
 # Fungsi untuk menampilkan detail
 def show_detail():
     st.title('Detail')
@@ -64,13 +53,79 @@ def show_detail():
     # Menampilkan plot
     st.plotly_chart(fig)
     
+def consistency_ratio(priority_index, ahp_df):
+    priority_index = priority_index.transpose()
+    random_matrix = {
+        1: 0, 2: 0, 3: 0.58, 4: 0.9, 5: 1.12, 6: 1.24, 7: 1.32,
+        8: 1.14, 9: 1.45, 10: 1.49, 11: 1.51, 12: 1.48, 13: 1.56,
+        14: 1.57, 15: 1.59, 16: 1.605, 17: 1.61, 18: 1.615, 19: 1.62, 20: 1.625
+    }
+    # Check for consistency
+    consistency_df = ahp_df.drop(df1.columns[[0]], axis=1).multiply(np.array(priority_index.loc['priority index']), axis=1)
+    consistency_df['sum_of_col'] = consistency_df.sum(axis=1)
+    # To find lambda max
+    lambda_max_df = consistency_df['sum_of_col'].div(np.array(priority_index.transpose()['priority index']), axis=0)
+    lambda_max = lambda_max_df.mean()
+    # To find the consistency index
+    consistency_index = round((lambda_max - len(ahp_df.index)) / (len(ahp_df.index) - 1), 3)
+    print(f'The Consistency Index is: {consistency_index}')
+    # To find the consistency ratio
+    consistency_ratio = round(consistency_index / random_matrix[len(ahp_df.index)], 3)
+    print(f'The Consistency Ratio is: {consistency_ratio}')
+    if consistency_ratio < 0.1:
+        print('The model is consistent')
+    else:
+        print('The model is not consistent')
 
 # Fungsi utama untuk aplikasi Streamlit
 def main():
     st.sidebar.title('Menu')
-    page = st.sidebar.selectbox("Choose a page", ["Prediction", "Definition", "Detail"])
+    page = st.sidebar.selectbox("Choose a page", ["Beranda", "Prediction", "Definition", "Detail"])
+    if page == "Beranda":
+        st.markdown(
+        """
+        <style>
+            @keyframes moveInFromTop {
+                from {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
 
-    if page == "Prediction":
+            @keyframes moveInFromBottom {
+                from {
+                    transform: translateY(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            h1 {
+                animation: moveInFromTop 1s ease-out;
+            }
+
+            .subtitle {
+                animation: moveInFromBottom 1s ease-out;
+                
+            }
+        </style>
+        """
+        , unsafe_allow_html=True
+        )
+
+        st.markdown("<br><br><br><br><br><br><br><br><br><h1 style='text-align: center;'>Welcome to Personality Trait Prediction !</h1><br><br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
+        
+        st.markdown("<p class='subtitle' style='text-align: center; font-size: 20px;'>By Kelompok 14</p>", unsafe_allow_html=True)
+
+
+    elif page == "Prediction":
         st.markdown(
             f"<h1 style='text-align: center;'>Personality Trait Prediction</h1>"
             "<h4 style='text-align: center;'>By Kelompok 14</h4>", 
@@ -139,7 +194,7 @@ def main():
             }
             df1 = pd.DataFrame(data1)
             ahp_att = ahp_attributes(df1)
-
+            
             # Membuat DataFrame hasil
             ahp_att1 = ahp_att.rename(columns={0: "Budget", 1: "Camera", 2: "RAM", 3: "ROM", 4: "Battery", 5: "Processor"})
             hasil = np.dot(df.values, ahp_att1.values)
@@ -147,23 +202,42 @@ def main():
                 "Personality": df.index,
                 "Hasil": hasil.flatten()
             })
-            max_personality = dfhasil[dfhasil["Hasil"] == dfhasil["Hasil"].max()]
 
+            max_personality_name = dfhasil.loc[dfhasil["Hasil"].idxmax(), "Personality"]
             # Piechart hasil
             st.header('Pie Chart Hasil')
             fig = px.pie(dfhasil, values='Hasil', names='Personality', color_discrete_sequence=['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557'])
             st.plotly_chart(fig)
 
-            # Menampilkan DataFrame hasil
-            st.write("Personality yang terpilih:", max_personality)
+            # Menampilkan hasil
+            st.markdown("""
+                <style>
+                    /* Animasi gradien merah */
+                    @keyframes colorchange {
+                        0% {color: #FF0000;}
+                        25% {color: #FF3333;}
+                        50% {color: #FF6666;}
+                        75% {color: #FF9999;}
+                        100% {color: #FFCCCC;}
+                    }
 
-            # Aksi yang dapat diambil
-            if st.button('Lihat Aksi yang Dapat Diambil'):
-                # Atur parameter URL untuk mengarahkan ke halaman lain
-                st.experimental_set_query_params(page='Action')
+                    /* Menerapkan animasi ke teks */
+                    .animated-text {
+                        animation: colorchange 5s infinite;
+                    }
+                </style>
+            """, unsafe_allow_html=True)
 
+            # Menampilkan hasil selected personality dengan animasi gradien merah
+            selected_personality = max_personality_name  # Ganti dengan hasil selected personality Anda
+            st.markdown(f"<h1 style='text-align: center;'>Personality yang terpilih: <span class='animated-text'>{selected_personality}</span></h1>", unsafe_allow_html=True)
+
+    # Page Definition
     elif page == "Definition":
-        st.title('Definisi Personality Traits')
+        st.markdown(
+            f"<h1 style='text-align: center;'>Personality Trait</h1>",
+            unsafe_allow_html=True
+        )
 
         # Daftar kepribadian
         personalities = ["Openness", "Conscientiousness", "Extraversion", "Agreeableness", "Neuroticism"]
@@ -171,17 +245,32 @@ def main():
         # Pilihan drop-down untuk memilih kepribadian
         selected_personality = st.selectbox("Pilih Personality", personalities)
 
-        # Menampilkan definisi berdasarkan pilihan pengguna
-        if selected_personality == "Openness":
-            st.write("**Openness**: Ciri-ciri kepribadian yang menunjukkan minat pada seni, kepemimpinan, atau emosi.")
-        elif selected_personality == "Conscientiousness":
-            st.write("**Conscientiousness**: Ciri-ciri kepribadian yang menunjukkan kepatuhan, kedisiplinan, dan keseriusan dalam suatu tindakan.")
-        elif selected_personality == "Extraversion":
-            st.write("**Extraversion**: Ciri-ciri kepribadian yang menunjukkan sifat sosial, percaya diri, dan antusiasme.")
-        elif selected_personality == "Agreeableness":
-            st.write("**Agreeableness**: Ciri-ciri kepribadian yang menunjukkan kerjasama, empati, dan toleransi terhadap orang lain.")
-        elif selected_personality == "Neuroticism":
-            st.write("**Neuroticism**: Ciri-ciri kepribadian yang menunjukkan tingkat kecemasan, ketegangan, dan sensitivitas emosional.")
+        # Data definisi dan strategi pemasaran
+        definition_strategies = {
+        "Openness": {
+            "Deskripsi": "Openness adalah kecenderungan individu untuk berpikir dan bertindak secara kreatif, terbuka terhadap pengalaman baru, dan memiliki minat yang luas dalam seni, kepemimpinan, atau emosi.",
+            "Strategi Pemasaran": "Menggunakan desain yang inovatif dan menarik untuk produk yang dapat meningkatkan kreativitas pelanggan."
+        },
+        "Conscientiousness": {
+            "Deskripsi": "Conscientiousness adalah kecenderungan individu untuk bertindak secara hati-hati, teratur, dan bertanggung jawab dalam segala tindakan.",
+            "Strategi Pemasaran": "Menyoroti keandalan dan kualitas produk serta menawarkan jaminan kepuasan pelanggan."
+        },
+        "Extraversion": {
+            "Deskripsi": "Extraversion adalah kecenderungan individu untuk menjadi sosial, percaya diri, dan antusias dalam interaksi sosial.",
+            "Strategi Pemasaran": "Mengadakan acara promosi dan aktivitas sosial untuk menarik perhatian pelanggan dan meningkatkan keterlibatan."
+        },
+        "Agreeableness": {
+            "Deskripsi": "Agreeableness adalah kecenderungan individu untuk bersikap ramah, empatik, dan toleran terhadap orang lain.",
+            "Strategi Pemasaran": "Menekankan pada layanan pelanggan yang ramah dan menawarkan produk yang mendukung kebutuhan dan nilai-nilai pelanggan."
+        },
+        "Neuroticism": {
+            "Deskripsi": "Neuroticism adalah kecenderungan individu untuk mengalami tingkat kecemasan, ketegangan, dan sensitivitas emosional yang tinggi.",
+            "Strategi Pemasaran": "Menyediakan produk atau layanan yang menawarkan rasa aman dan kenyamanan bagi pelanggan."
+        }
+    }
+
+        # Menampilkan definisi dan strategi pemasaran dalam bentuk tabel
+        st.table(definition_strategies[selected_personality])
 
     elif page == "Detail":
         show_detail()
