@@ -205,21 +205,21 @@ def main():
         }
 
         # Proses input bobot relatif
-        budvscam = placeholders["budvscam"].slider("Seberapa penting harga dibandingkan kamera?", min_value=0, max_value=9, value=5, format="%.0f", key="budvscam", help="0: Tidak Penting, 9: Sangat Penting")
-        budvsram = placeholders["budvsram"].slider("Seberapa penting harga dibandingkan RAM?", min_value=0, max_value=9, value=5, format="%.0f", key="budvsram")
-        budvsrom = placeholders["budvsrom"].slider("Seberapa penting harga dibandingkan ROM?", min_value=0, max_value=9, value=5, format="%.0f", key="budvsrom")
-        budvsbat = placeholders["budvsbat"].slider("Seberapa penting harga dibandingkan baterai?", min_value=0, max_value=9, value=5, format="%.0f", key="budvsbat")
-        budvsprc = placeholders["budvsprc"].slider("Seberapa penting harga dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="budvsprc")
-        camvsram = placeholders["camvsram"].slider("Seberapa penting kamera dibandingkan RAM?", min_value=0, max_value=9, value=5, format="%.0f", key="camvsram")
-        camvsrom = placeholders["camvsrom"].slider("Seberapa penting kamera dibandingkan ROM?", min_value=0, max_value=9, value=5, format="%.0f", key="camvsrom")
-        camvsbat = placeholders["camvsbat"].slider("Seberapa penting kamera dibandingkan batera?", min_value=0, max_value=9, value=5, format="%.0f", key="camvsbat")
-        camvsprc = placeholders["camvsprc"].slider("Seberapa penting kamera dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="camvsprc")
-        ramvsrom = placeholders["ramvsrom"].slider("Seberapa penting RAM dibandingkan ROM?", min_value=0, max_value=9, value=5, format="%.0f", key="ramvsrom")
-        ramvsbat = placeholders["ramvsbat"].slider("Seberapa penting RAM dibandingkan baterai?", min_value=0, max_value=9, value=5, format="%.0f", key="ramvsbat")
-        ramvsprc = placeholders["ramvsprc"].slider("Seberapa penting RAM dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="ramvsprc")
-        romvsbat = placeholders["romvsbat"].slider("Seberapa penting ROM dibandingkan baterai?", min_value=0, max_value=9, value=5, format="%.0f", key="romvsbat")
-        romvsprc = placeholders["romvsprc"].slider("Seberapa penting ROM dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="romvsprc")
-        batvsprc = placeholders["batvsprc"].slider("Seberapa penting baterai dibandingkan processor?", min_value=0, max_value=9, value=5, format="%.0f", key="batvsprc")
+        budvscam = placeholders["budvscam"].slider("Seberapa penting harga dibandingkan kamera?", min_value=1, max_value=9, value=5, format="%.0f", key="budvscam", help="1: Tidak Penting, 9: Sangat Penting")
+        budvsram = placeholders["budvsram"].slider("Seberapa penting harga dibandingkan RAM?", min_value=1, max_value=9, value=5, format="%.0f", key="budvsram")
+        budvsrom = placeholders["budvsrom"].slider("Seberapa penting harga dibandingkan ROM?", min_value=1, max_value=9, value=5, format="%.0f", key="budvsrom")
+        budvsbat = placeholders["budvsbat"].slider("Seberapa penting harga dibandingkan baterai?", min_value=1, max_value=9, value=5, format="%.0f", key="budvsbat")
+        budvsprc = placeholders["budvsprc"].slider("Seberapa penting harga dibandingkan processor?", min_value=1, max_value=9, value=5, format="%.0f", key="budvsprc")
+        camvsram = placeholders["camvsram"].slider("Seberapa penting kamera dibandingkan RAM?", min_value=1, max_value=9, value=5, format="%.0f", key="camvsram")
+        camvsrom = placeholders["camvsrom"].slider("Seberapa penting kamera dibandingkan ROM?", min_value=1, max_value=9, value=5, format="%.0f", key="camvsrom")
+        camvsbat = placeholders["camvsbat"].slider("Seberapa penting kamera dibandingkan batera?", min_value=1, max_value=9, value=5, format="%.0f", key="camvsbat")
+        camvsprc = placeholders["camvsprc"].slider("Seberapa penting kamera dibandingkan processor?", min_value=1, max_value=9, value=5, format="%.0f", key="camvsprc")
+        ramvsrom = placeholders["ramvsrom"].slider("Seberapa penting RAM dibandingkan ROM?", min_value=1, max_value=9, value=5, format="%.0f", key="ramvsrom")
+        ramvsbat = placeholders["ramvsbat"].slider("Seberapa penting RAM dibandingkan baterai?", min_value=1, max_value=9, value=5, format="%.0f", key="ramvsbat")
+        ramvsprc = placeholders["ramvsprc"].slider("Seberapa penting RAM dibandingkan processor?", min_value=1, max_value=9, value=5, format="%.0f", key="ramvsprc")
+        romvsbat = placeholders["romvsbat"].slider("Seberapa penting ROM dibandingkan baterai?", min_value=1, max_value=9, value=5, format="%.0f", key="romvsbat")
+        romvsprc = placeholders["romvsprc"].slider("Seberapa penting ROM dibandingkan processor?", min_value=1, max_value=9, value=5, format="%.0f", key="romvsprc")
+        batvsprc = placeholders["batvsprc"].slider("Seberapa penting baterai dibandingkan processor?", min_value=1, max_value=9, value=5, format="%.0f", key="batvsprc")
 
         # Proses AHP saat tombol ditekan
         if st.button('Proses AHP'):
