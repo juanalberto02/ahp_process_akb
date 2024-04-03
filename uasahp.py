@@ -32,6 +32,29 @@ def ahp_attributes(ahp_df):
 
 
 
+# Fungsi untuk CR
+def consistency_ratio(priority_index, ahp_df):
+    # Check for consistency
+    consistency_df = ahp_df.drop(ahp_df.columns[[0]], axis=1).multiply(np.array(priority_index.loc['priority index']), axis=1)
+    consistency_df['sum_of_col'] = consistency_df.sum(axis=1)
+    
+    # To find lambda max
+    lambda_max_df = consistency_df['sum_of_col'].div(np.array(priority_index.transpose()['priority index']), axis=0)
+    lambda_max = lambda_max_df.mean()
+    
+    # To find the consistency index
+    consistency_index = round((lambda_max - len(ahp_df.index)) / (len(ahp_df.index) - 1), 3)
+    print(f'The Consistency Index is: {consistency_index}')
+    
+    # To find the consistency ratio
+    consistency_ratio = round(consistency_index / random_matrix[len(ahp_df.index)], 3)
+    print(f'The Consistency Ratio is: {consistency_ratio}')
+    
+    if consistency_ratio < 0.1:
+        print('The model is consistent')
+    else:
+        print('The model is not consistent')
+    return consistency_index, consistency_ratio
 # Fungsi untuk menampilkan detail
 def show_detail():
     st.title('Detail')
@@ -39,7 +62,7 @@ def show_detail():
         Bobot distribusi yang digunakan dalam prediksi kepribadian:
 
         | Kriteria          | Openness | Conscientiousness | Extraversion | Agreeableness | Neuroticism |
-        |-------------------|----------|-------------------|--------------|---------------|-------------|
+        |-------------------|----------|-------------------|-------------y-|---------------|-------------|
         | Budget            | 0.2077   | 0.1676            | 0.2073       | 0.1990        | 0.2182      |
         | Camera            | 0.1846   | 0.2427            | 0.1635       | 0.1713        | 0.2379      |
         | RAM               | 0.2198   | 0.1821            | 0.1771       | 0.2186        | 0.2024      |
@@ -137,7 +160,7 @@ def main():
         , unsafe_allow_html=True
         )
 
-        st.markdown("<br><br><br><br><br><br><br><br><br><h1 style='text-align: center;'>Welcome to Personality Trait Prediction !</h1><br><br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
+        st.markdown("<br><br><br><br><br><br><br><br><h1 style='text-align: center;'>Welcome to Personality Trait Prediction !</h1><br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
         
         st.markdown("<p class='subtitle' style='text-align: center; font-size: 20px;'>By Kelompok 14</p>", unsafe_allow_html=True)
 
@@ -151,16 +174,16 @@ def main():
 
         # Teks dari DataFrame
         data_text = """
-                     Budget  Camera     RAM     ROM  Battery  Processor
-            Openness           0.2077  0.1846  0.2198  0.1973   0.2099     0.2003
-            Conscientiousness  0.1676  0.2427  0.1821  0.2288   0.1882     0.1712
-            Extraversion       0.2073  0.1635  0.1771  0.1639   0.1845     0.2039
-            Agreeableness      0.1990  0.1713  0.2186  0.1716   0.2214     0.2079
-            Neuroticism        0.2182  0.2379  0.2024  0.2384   0.1960     0.2166
-            """
+                Budget  Camera     RAM     ROM  Battery  Processor
+        Openness      0.2073  0.2427  0.1771  0.1639  0.2099     0.1712
+        Conscientiousness  0.2182  0.1846  0.1821  0.1973  0.2214     0.2166
+        Extraversion  0.2077  0.1635  0.2024  0.2384  0.1845     0.2039
+        Agreeableness  0.1676  0.2379  0.2186  0.1716  0.2214     0.2003
+        Neuroticism  0.199  0.1713  0.1639  0.2288  0.196     0.2039
+        """
 
         # Membaca DataFrame dari teks
-        df = pd.read_csv(StringIO(data_text), delim_whitespace=True, index_col=0)
+        df = pd.read_csv(StringIO(data_text), delim_whitespace=True, index_col=0, skipinitialspace=True)
 
         # Placeholder untuk input bobot relatif
         placeholders = {
@@ -209,10 +232,10 @@ def main():
                 "Battery": [budvsbat, camvsbat, ramvsbat, romvsbat, 1, 1/batvsprc],
                 "Processor": [budvsprc, camvsprc, ramvsprc, romvsprc, batvsprc, 1]
             }
+
+            # Membuat DataFrame hasil
             df1 = pd.DataFrame(data1)
             ahp_att = ahp_attributes(df1)
-            
-            # Membuat DataFrame hasil
             ahp_att1 = ahp_att.rename(columns={0: "Budget", 1: "Camera", 2: "RAM", 3: "ROM", 4: "Battery", 5: "Processor"})
             hasil = np.dot(df.values, ahp_att1.values)
             dfhasil = pd.DataFrame({
@@ -221,6 +244,9 @@ def main():
             })
 
             max_personality_name = dfhasil.loc[dfhasil["Hasil"].idxmax(), "Personality"]
+
+            # Consistency Ratio   
+            #st.write(hasil_cr)
             # Piechart hasil
             st.header('Pie Chart Hasil')
             fig = px.pie(dfhasil, values='Hasil', names='Personality', color_discrete_sequence=['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557'])
